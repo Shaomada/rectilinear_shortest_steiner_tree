@@ -1,7 +1,6 @@
 #ifndef IN_HPP
 #define IN_HPP
 
-#include "common.hpp"
 #include <fstream>
 #include <vector>
 

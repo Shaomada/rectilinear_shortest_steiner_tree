@@ -1,43 +1,22 @@
 #include "grid.hpp"
-#include <algorithm>
-#include <functional> // ?
 
 Grid::number Grid::run_dijkstra_steiner()
 {
-  // choice
   unsigned t = _T.size()-1;
   size_t other_terminals = (1<<t)-1;
-  // line 1 pseudocode
   for (unsigned s = 0; s < t; s++) {
     decrease (_T.at(s), 1<<s, 0);
   }
-  // line 2 pseudocode
-  
   while (true) {
-    // line 3 pseudocode
     Label label = _h.extract_min();
-    /*std::cout
-      << "v " << label.v
-      << "\tI " << label.I
-      << "\tl " << label.l
-      << "\tlb " << label.lb(this)
-      << "\tx " << _x[0].at(decode(0, label.v))
-      << "\ty " << _x[1].at(decode(1, label.v))
-      << "\tz " << _x[2].at(decode(2, label.v))
-      << std::endl;*/
     _l.at(label.v).erase(label.I);
-    // line 4 pseudocode
     _P.at(label.v).emplace(label.I, label);
-    // line 5 pseudocode
     if (label.v == _T[t] && label.I == other_terminals) {
       return label.l;
     }
-    // line 6 pseudocode
     for (unsigned w : neighbours(label.v)) {
-      //std::cout << "considering neighbour " << w <<" of " << label.v << std::endl;
       decrease(w, label.I, label.l+l1(label.v, w));
     }
-    // line 7 pseudocode
     for (const std::pair<size_t,Label> &p : _P.at(label.v)) {
       if ((label.I & p.first) == 0) {
 	decrease (label.v, label.I+p.first, label.l + p.second.l);
@@ -78,7 +57,7 @@ std::vector<unsigned> Grid::neighbours(unsigned v) const {
 void Grid::decrease (unsigned v, size_t I, number l)
 {
   if (_P.at(v).count(I) == 0) {
-    /*std::pair<size_t,typename Heap<Label,C>::Node>**/ auto p = _l.at(v).find(I);
+    auto p = _l.at(v).find(I);
     if (p == _l.at(v).end()) {
       _l.at(v).emplace(I, _h.add(Label(v, I, l)));
     } else if (p->second->content.l > l) {

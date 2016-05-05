@@ -1,7 +1,6 @@
 #ifndef GRID_HPP
 #define GRID_HPP
 
-#include "common.hpp"
 #include <limits>
 #include <vector>
 #include <map>

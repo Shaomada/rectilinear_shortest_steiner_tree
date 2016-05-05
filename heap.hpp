@@ -2,7 +2,6 @@
 #define HEAP_HPP
 
 #include <vector>
-#include <algorithm>
 
 template <typename T, typename Compare>
 class Heap {

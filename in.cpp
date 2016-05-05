@@ -1,5 +1,6 @@
 #include "in.hpp"
 #include <sstream>
+#include <stdexcept>
 #include <algorithm>
 
 void Reader::read( std::vector<number> x[3], std::vector<unsigned> &T)
@@ -8,7 +9,9 @@ void Reader::read( std::vector<number> x[3], std::vector<unsigned> &T)
   for (unsigned i = 0; i < 4; i++) {
     input[i] = read_line();
   }
-  INPUTCHECK(input[3].size()%3 == 0)
+  if (input[3].size() % 3 != 0) {
+    throw std::runtime_error("total number of terminal coordinates not devisble by 3.");
+  }
   
   // x[i%3]: All existing terminal coordinates in dim i%3
   for (unsigned i = 0; i < input[3].size(); i++) {
@@ -33,21 +36,24 @@ void Reader::read( std::vector<number> x[3], std::vector<unsigned> &T)
 	break;
       }
     }
-    CHECK(j<x[i%3].size())
     // make sure the value is also in input[i%3]
     for (j = 0; j < input[i%3].size(); j++) {
       if (input[i%3].at(j) == input[3].at(i)) {
 	break;
       }
     }
-    INPUTCHECK(j<input[i%3].size())
+    if (j==input[i%3].size()) {
+      throw std::runtime_error("terminal coordinates not found in given grid");
+    }
   }
 }
 
 std::vector<Reader::number> Reader::read_line() {
   std::vector<number> v;
   std::string line;
-  INPUTCHECK( std::getline(_file, line) )
+  if (not std::getline(_file, line) ) {
+    throw std::runtime_error("too few lines");
+  }
   std::stringstream ss(line);
   number tmp;
   while (ss >> tmp, ss) {
