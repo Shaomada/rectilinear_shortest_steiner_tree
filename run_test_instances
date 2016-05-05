@@ -1,0 +1,19 @@
+application=rectilinear_shortest_steiner_tree
+input_files_and_steiner_lengths=steiner_lengths.txt
+input_file_ending='.gg'
+parity="even"
+
+make
+for word in $(cat $input_files_and_steiner_lengths)
+do
+  if [ "$parity" == "even" ]
+  then
+    ./$application $word$input_file_ending
+    parity="odd"
+  else
+    echo \ \ \ \ \ \ \ \ \ expected solution was: $word
+    echo ""
+    parity="even"
+  fi
+done
+make clean
