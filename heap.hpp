@@ -3,12 +3,10 @@
 
 #include <vector>
 #include <algorithm>
-#include <iostream>
 
 template <typename T, typename Compare>
 class Heap {
 public:
-  bool test_heap ();
   class Node {
   public:
     Node (T content, size_t pos)
@@ -16,7 +14,8 @@ public:
     T content;
     size_t pos;
   };
-  Heap (Compare c) : _heap(), _cmp(c) {};
+  Heap (Compare c) : _heap(), _c(c) {};
+  ~Heap () { for (Node *n : _heap) delete n; }
   Node *add (T content);
   void decrease (Node *n);
   T extract_min();
@@ -26,29 +25,12 @@ public:
   }
 private:
   std::vector<Node *> _heap;
-  Compare _cmp;
+  Compare _c;
   
   bool cmp (const Node *n, const Node *m) const {
-    return _cmp(n->content, m->content);
+    return _c(n->content, m->content);
   }
 };
-
-template <typename T, typename Compare>
-bool Heap<T,Compare>::test_heap () {
-  for (unsigned i = 1; i < _heap.size(); i++) {
-    if (cmp(_heap.at(i), _heap.at((i-1)/2))) {
-      std::cout << "heap_test failed for pair " << i << " " << (i-1)/2 << std::endl;
-      return false;
-    }
-  }
-  for (unsigned i = 0; i < _heap.size(); i++) {
-    if (i != _heap.at(i)->pos) {
-      std::cout << "heap_test failed for pos of " << i << std::endl;
-      return false;
-    }
-  }
-  return true;
-}
 
 template <typename T, typename Compare>
 typename Heap<T,Compare>::Node *Heap<T,Compare>::add (T content) {
@@ -59,9 +41,6 @@ typename Heap<T,Compare>::Node *Heap<T,Compare>::add (T content) {
     std::swap(_heap.at(i), _heap.at(j));
     std::swap(_heap.at(i)->pos, _heap.at(j)->pos);
   }
-  if (not test_heap()) {
-    std::cout << "adding caused heap to fail" << std::endl;
-  }
   return n;
 }
 
@@ -71,9 +50,6 @@ void Heap<T, Compare>::decrease (Node *n) {
   while ((i = j) && cmp(_heap.at(i), _heap.at((j = (i-1)/2)))) {
     std::swap(_heap.at(i), _heap.at(j));
     std::swap(_heap.at(i)->pos, _heap.at(j)->pos);
-  }
-  if (not test_heap()) {
-    std::cout << "decreasing caused heap to fail" << std::endl;
   }
 }
 
@@ -97,9 +73,6 @@ T Heap<T, Compare>::extract_min () {
       min_index = 2*i+2;
     }
     if (i == min_index) {
-      if (not test_heap()) {
-	std::cout << "extracting caused heap to fail" << std::endl;
-      }
       return l;
     }
     else {
