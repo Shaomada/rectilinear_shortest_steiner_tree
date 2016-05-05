@@ -1,0 +1,6 @@
+# input files
+steiner_lengths.txt
+*.gg
+# output files
+*.o
+*.out
