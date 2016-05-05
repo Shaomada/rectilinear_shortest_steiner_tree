@@ -2,5 +2,4 @@
 steiner_lengths.txt
 *.gg
 # output files
-*.o
-*.out
+rectilinear_shortest_steiner_tree
